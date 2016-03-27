@@ -4,9 +4,9 @@
 function AppModel(attrs) {
     this.val = "";
     this.attrs = {
-        required: "",
-        maxlength: 8,
-        minlength: 4
+        required : attrs.required  || false,
+        maxlength: attrs.maxlength || 8,
+        minlength: attrs.minlength || 4
     };
     this.listenners = {
         valid: [],

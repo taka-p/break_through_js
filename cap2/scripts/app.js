@@ -19,12 +19,11 @@ Modal.prototype.initialize = function (el) {
   this.$el = el;
   this.$container = $("#modal");
   this.$contents = $("#modal-contents");
-  this.$close = $("#modal-close");
-  this.$next = $("#modal-next");
-  this.$prev = $("#modal-prev");
   this.$overlay = $("#modal-overlay");
-  this.$window = $(window);
 
+  this.$parents = this.$el.parents("ul");
+
+  this.$window = $(window);
   this.handleEvents();
 };
 
@@ -33,13 +32,13 @@ Modal.prototype.handleEvents = function () {
   var that = this;
 
   // イベント基点の要素がクリックされた際、showメソッドを呼び出し
-  this.$el.on("click", function (e) {
+  this.$parents.on("click", "a", function (e) {
     that.show(e);
     return false;
   });
 
   // 閉じるボタンクリック時に、hideメソッドを呼び出し
-  this.$close.on("click", function (e) {
+  this.$container.on("click", "#modal-close", function (e) {
     that.hide(e);
     return false;
   });
@@ -51,13 +50,13 @@ Modal.prototype.handleEvents = function () {
   });
 
   // 次へボタンクリック時にnextメソッドを呼び出し
-  this.$next.on("click", function (e) {
+  this.$container.on("click", "#modal-next", function (e) {
     that.next(e);
     return false;
   });
 
   // 戻るボタン同上
-  this.$prev.on("click", function (e) {
+  this.$container.on("click", "#modal-prev", function (e) {
     that.prev(e);
     return false;
   });
@@ -140,4 +139,16 @@ Modal.prototype.resize = function () {
 
 // 引数に処理の基点となる要素を渡してインスタンス化
 var modal = new Modal($("#modal-thumb a"));
+
+// もっと見るボタン（動的にimg要素を追加）
+$("#more-btn").on("click", function() {
+  var html = '<li>\
+    <a href="images/photo-04.JPG" data-index="3">\
+      <img alt="" src="images/photo-04.JPG" width="160" class="img-thumbnail">\
+    </a>\
+  </li>';
+  $(html).appendTo($("#modal-thumb")).hide().fadeIn();
+  $(this).fadeOut();
+  modal.$el = $("#modal-thumb a");
+});
 

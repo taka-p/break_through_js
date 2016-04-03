@@ -54,6 +54,12 @@ Modal.prototype.handleEvents = function () {
     that.prev(e);
     return false;
   });
+
+  // 画面ロード時、ブラウザリサイズ時にresizeメソッドを呼び出し
+  this.$window.on("load resize", function (e) {
+    that.resize(e);
+    return false;
+  });
 };
 
 // クリックされた要素からhrefとindexを抽出、modalのsrcに設定した上でmodal部品を展開
@@ -104,6 +110,18 @@ Modal.prototype.next = function () {
 // 同上
 Modal.prototype.prev = function () {
   this.slide(this.countChange(-1));
+};
+
+// 同上
+Modal.prototype.resize = function () {
+  var w = this.$window.width();
+
+  if (w < 640) {
+    this.$container.css({"width": "320", "height": "213"});
+  }
+  else {
+    this.$container.css({"width": "750", "height": "500"});
+  }
 };
 
 // 引数に処理の基点となる要素を渡してインスタンス化

@@ -9,6 +9,13 @@ function Modal(el) {
 
 // 初期化を行うinitializeメソッド
 Modal.prototype.initialize = function (el) {
+  this.const = {
+    MODAL_WIDTH_ORIGIN : 750,
+    MODAL_HEIGHT_ORIGIN: 500,
+    MODAL_WIDTH_SMALL  : 320,
+    MODAL_HEIGHT_SMALL : 213
+  };
+
   this.$el = el;
   this.$container = $("#modal");
   this.$contents = $("#modal-contents");
@@ -114,13 +121,20 @@ Modal.prototype.prev = function () {
 
 // 同上
 Modal.prototype.resize = function () {
-  var w = this.$window.width();
+  var w = this.$window.width(),
+      that = this;
 
   if (w < 640) {
-    this.$container.css({"width": "320", "height": "213"});
+    this.$container.css({
+      "width": that.const.MODAL_WIDTH_SMALL,
+      "height": that.const.MODAL_HEIGHT_SMALL
+    });
   }
   else {
-    this.$container.css({"width": "750", "height": "500"});
+    this.$container.css({
+      "width": that.const.MODAL_WIDTH_ORIGIN,
+      "height": that.const.MODAL_HEIGHT_ORIGIN
+    });
   }
 };
 

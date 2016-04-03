@@ -1,6 +1,8 @@
 /**
- * modelコンストラクタ
+ * プロトタイプ、クロージャ、オブザーバーの例
  */
+
+// modelコンストラクタ
 function AppModel(attrs) {
     this.val = "";
     this.attrs = {

@@ -44,6 +44,12 @@ Particle.prototype.initialize = function (x, y) {
         x: Math.random() * 10 - 5, // x方向の速度
         y: Math.random() * 10 - 5 // y方向の速度
     };
+    this.color = {
+        r: Math.floor(Math.random() * 255),
+        g: Math.floor(Math.random() * 255),
+        b: Math.floor(Math.random() * 255),
+        a: 1
+    };
 }
 
 Particle.prototype.render = function () {
@@ -76,7 +82,7 @@ Particle.prototype.wrapPosition = function () {
 }
 
 Particle.prototype.gradient = function () {
-    var col = "0,0,0";
+    var col = this.color.r + "," + this.color.g + "," + this.color.b;
     var g = this.ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
     g.addColorStop(0, "rgba(" + col + " ,1)");
     g.addColorStop(0.5, "rgba(" + col + ", 0.2)");

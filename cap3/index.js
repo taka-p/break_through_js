@@ -8,13 +8,6 @@
  *
  **/
 
-// canvas要素の取得、canvas要素の2dコンテキストを取得
-var canvas = document.getElementById("canvas"),
-    ctx = canvas.getContext("2d"),
-    interval = Math.floor(1000 / 60), // 60FPSで描画
-    x = 5,
-    y = 5;
-
 Window.requestAnimationFrame =
     window.requestAnimationFrame ||
     window.mozRequestAnimationFrame ||
@@ -24,23 +17,64 @@ Window.requestAnimationFrame =
         setTimeout(cd, 17);
     };
 
+// canvas要素の取得、canvas要素の2dコンテキストを取得
+var canvas = document.getElementById("canvas"),
+    ctx = canvas.getContext("2d");
 
-draw(); // 1. 図形を描画
+var NUM = 20,
+    particles = [];
 
-function draw() {
-    ctx.clearRect(0, 0, 500, 500); // 2. 図形を消去
+canvas.width = canvas.height = 500;
 
-    x += 5; //3. 位置をずらす
-    y += 5;
+for (var i = 0; i < NUM; i++) {
+    positionX = Math.random() * 120; // X座標を0-120の間でランダムに
+    positionY = Math.random() * 20; // Y座標を0-20の間でランダムに
+    particle = new Particle(ctx, positionX, positionY);
+    particles.push(particle);
+}
 
-    ctx.beginPath(); //4. 再度、図形を描画
+function Particle(ctx, x, y) {
+    this.ctx = ctx;
+    this.x = x || 0;
+    this.y = y || 0;
+}
+
+Particle.prototype.render = function () {
+    this.updatePosition();
+    this.draw();
+}
+
+Particle.prototype.draw = function () {
+    //4. 再度、図形を描画
+    ctx = this.ctx;
+    ctx.beginPath();
     ctx.fillStyle = "#99ff66";
-    ctx.rect(x, y, 100, 200);
-    // ctx.arc( 100, 100, 40, 0, Math.PI * 2 ); 円形
+    ctx.rect(this.x, this.y, 4, 4);
     ctx.fill();
     ctx.closePath();
-
-    requestAnimationFrame(draw);
 }
+
+Particle.prototype.updatePosition = function () {
+    //3. 位置をずらす
+    this.x += 5;
+    this.y += 5;
+}
+
+// 1. 図形を描画(描画サイクルの開始)
+render();
+
+function render() {
+    // 2. 図形を消去
+    ctx.clearRect(0, 0, 500, 500);
+
+    // 配列の各要素の関数renderを実行して図形を描画
+    particles.forEach(function (e) {
+        e.render();
+    });
+
+    // 5. 一定時間時間を置く
+    requestAnimationFrame(render);
+}
+
 
 

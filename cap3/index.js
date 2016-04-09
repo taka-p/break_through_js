@@ -1,11 +1,10 @@
 /**
- * Canvasの描画フロー
+ * Canvasの気補填的な描画フロー
  * 1. 図形を描画
  * 2. 図形を消去
  * 3. 位置をずらす
  * 4. 再度、図形を描画
  * 5. 一定時間時間を置く
- *
  **/
 
 Window.requestAnimationFrame =
@@ -19,16 +18,20 @@ Window.requestAnimationFrame =
 
 // canvas要素の取得、canvas要素の2dコンテキストを取得
 var canvas = document.getElementById("canvas"),
-    ctx = canvas.getContext("2d");
-
-var NUM = 100,
-    LIFEMAX = 100,
-    W = 500,
-    H = 500,
+    ctx = canvas.getContext("2d"),
     particles = [];
 
-canvas.width = W;
-canvas.height = H;
+// 定数
+var consts = {
+        NUM: 100,
+        LIFEMAX: 100,
+        W: 500,
+        H: 500,
+        R: 250
+    };
+
+canvas.width = consts.W;
+canvas.height = consts.H;
 
 function Particle(ctx, x, y) {
     this.ctx = ctx;
@@ -38,8 +41,8 @@ function Particle(ctx, x, y) {
 Particle.prototype.initialize = function (x, y) {
     this.x = x || 0;
     this.y = y || 0;
-    this.radius = 250;
-    this.startLife = Math.ceil(LIFEMAX * Math.random()); // 寿命の初期化
+    this.radius = consts.R;
+    this.startLife = Math.ceil(consts.LIFEMAX * Math.random()); // 寿命の初期化
     this.currentLife = this.startLife; // 現在の寿命として設定
 
     // 速度用のオブジェクトv
@@ -88,10 +91,10 @@ Particle.prototype.updatePosition = function () {
 }
 
 Particle.prototype.wrapPosition = function () {
-    if (this.x < 0) this.x = W;
-    if (this.x > W) this.x = 0;
-    if (this.y < 0) this.y = H;
-    if (this.y > H) this.y = 0;
+    if (this.x < 0) this.x = consts.W;
+    if (this.x > consts.W) this.x = 0;
+    if (this.y < 0) this.y = consts.H;
+    if (this.y > consts.H) this.y = 0;
 }
 
 Particle.prototype.gradient = function () {
@@ -105,7 +108,7 @@ Particle.prototype.gradient = function () {
 
 function render() {
     // 2. 図形を消去
-    ctx.clearRect(0, 0, W, H);
+    ctx.clearRect(0, 0, consts.W, consts.H);
 
     ctx.globalCompositeOperation = "lighter";
 
@@ -119,9 +122,9 @@ function render() {
 }
 
 // ここから実行
-for (var i = 0; i < NUM; i++) {
-    positionX = Math.random() * W; // X座標を0-120の間でランダムに
-    positionY = Math.random() * H; // Y座標を0-20の間でランダムに
+for (var i = 0; i < consts.NUM; i++) {
+    positionX = Math.random() * consts.W; // X座標を0-120の間でランダムに
+    positionY = Math.random() * consts.H; // Y座標を0-20の間でランダムに
     particle = new Particle(ctx, positionX, positionY);
     particles.push(particle);
 }

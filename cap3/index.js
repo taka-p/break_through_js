@@ -24,6 +24,9 @@ var canvas = document.getElementById("canvas"),
 var NUM = 20,
     particles = [];
 
+var W = 500,
+    H = 500;
+
 canvas.width = canvas.height = 500;
 
 for (var i = 0; i < NUM; i++) {
@@ -37,6 +40,11 @@ function Particle(ctx, x, y) {
     this.ctx = ctx;
     this.x = x || 0;
     this.y = y || 0;
+    // 速度用のオブジェクトv
+    this.v = {
+        x: Math.random() * 10 - 5, // x方向の速度
+        y: Math.random() * 10 - 5 // y方向の速度
+    }
 }
 
 Particle.prototype.render = function () {
@@ -56,8 +64,15 @@ Particle.prototype.draw = function () {
 
 Particle.prototype.updatePosition = function () {
     //3. 位置をずらす
-    this.x += 5;
-    this.y += 5;
+    this.x += this.v.x;
+    this.y += this.v.y;
+}
+
+Particle.prototype.wrapPosition = function () {
+    if (this.x < 0) this.x = W;
+    if (this.x > W) this.x = 0;
+    if (this.y < 0) this.y = H;
+    if (this.y > H) this.y = 0;
 }
 
 // 1. 図形を描画(描画サイクルの開始)
@@ -65,7 +80,7 @@ render();
 
 function render() {
     // 2. 図形を消去
-    ctx.clearRect(0, 0, 500, 500);
+    ctx.clearRect(0, 0, W, H);
 
     // 配列の各要素の関数renderを実行して図形を描画
     particles.forEach(function (e) {

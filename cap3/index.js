@@ -27,28 +27,28 @@ var NUM = 20,
 var W = 500,
     H = 500;
 
-canvas.width = canvas.height = 500;
-
-for (var i = 0; i < NUM; i++) {
-    positionX = Math.random() * 120; // X座標を0-120の間でランダムに
-    positionY = Math.random() * 20; // Y座標を0-20の間でランダムに
-    particle = new Particle(ctx, positionX, positionY);
-    particles.push(particle);
-}
+canvas.width = W;
+canvas.height = H;
 
 function Particle(ctx, x, y) {
     this.ctx = ctx;
+    this.initialize(x, y);
+}
+
+Particle.prototype.initialize = function (x, y) {
     this.x = x || 0;
     this.y = y || 0;
+    this.radius = 10;
     // 速度用のオブジェクトv
     this.v = {
         x: Math.random() * 10 - 5, // x方向の速度
         y: Math.random() * 10 - 5 // y方向の速度
-    }
+    };
 }
 
 Particle.prototype.render = function () {
     this.updatePosition();
+    this.wrapPosition();
     this.draw();
 }
 
@@ -56,8 +56,8 @@ Particle.prototype.draw = function () {
     //4. 再度、図形を描画
     ctx = this.ctx;
     ctx.beginPath();
-    ctx.fillStyle = "#99ff66";
-    ctx.rect(this.x, this.y, 4, 4);
+    ctx.fillStyle = this.gradient();
+    ctx.arc(this.x, this.y, this.radius, Math.PI * 2, false);
     ctx.fill();
     ctx.closePath();
 }
@@ -73,6 +73,22 @@ Particle.prototype.wrapPosition = function () {
     if (this.x > W) this.x = 0;
     if (this.y < 0) this.y = H;
     if (this.y > H) this.y = 0;
+}
+
+Particle.prototype.gradient = function () {
+    var col = "0,0,0";
+    var g = this.ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
+    g.addColorStop(0, "rgba(" + col + " ,1)");
+    g.addColorStop(0.5, "rgba(" + col + ", 0.2)");
+    g.addColorStop(1, "rgba(" + col + ", 0)");
+    return g;
+}
+
+for (var i = 0; i < NUM; i++) {
+    positionX = Math.random() * W; // X座標を0-120の間でランダムに
+    positionY = Math.random() * H; // Y座標を0-20の間でランダムに
+    particle = new Particle(ctx, positionX, positionY);
+    particles.push(particle);
 }
 
 // 1. 図形を描画(描画サイクルの開始)

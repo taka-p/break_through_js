@@ -6,9 +6,16 @@
 
     function urlChangeHandler() {
         var pageid = parseUrl(location.hash);
-        $pages.detach()
-              .filter('.page' + pageid)
-              .appendTo('article');
+        $pages.filter(':visible')
+            .fadeOut()
+            .promise()
+            .then(function () {
+                $pages.hide()
+                    .detach()
+                    .filter('.page' + pageid)
+                    .appendTo('article')
+                    .fadeIn();
+            });
     }
 
     function parseUrl(url) {
@@ -17,8 +24,9 @@
 
     function init() {
         $pages = $('[data-role=page]').detach();
-        $(window).on("hashchange", urlChangeHandler)
-                 .trigger("hashchange");
+        $(window)
+            .on("hashchange", urlChangeHandler)
+            .trigger("hashchange");
     }
 
     init();

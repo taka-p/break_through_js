@@ -5,9 +5,12 @@
 
 function App(url) {
     this.bindEvents();
+    this.template = _.template($('[data-template="item"]').html());
     var that = this;
     this.fetch(url).then(function (data) {
         that.data = data;
+        // 初期表示（filter,sortしていないデータ）
+        that.render(that.data.list);
     }, function (e) {
         console.error('データの取得に失敗しました');
     });
@@ -35,8 +38,8 @@ App.prototype.onChange = function (e) {
     //  function (list) { select[filter](list, select[filter].value); },
     //  function (list) { select[sort](list, select[sort].value); }
     // ];
-    var where = $('select').map(function (i, e) {
-        var $el = $(e);
+    var where = $('select').map(function (i, el) {
+        var $el = $(el);
         return function (list) {
             return that[$el.attr('name')](list, $el.val());
         };
@@ -53,6 +56,9 @@ App.prototype.onChange = function (e) {
     var list = _.reduce(where, function (prev, current) {
         return current(prev);
     }, this.data.list);
+
+    // filter,sortしたデータを再描画
+    this.render(list);
 };
 
 App.prototype.sort = function (list, key) {
@@ -78,6 +84,13 @@ App.prototype.filter = function (list, value) {
 
 App.prototype.isEmpty = function (value) {
     return value === "";
+};
+
+App.prototype.render = function (data) {
+    var html = this.template({
+        list: data
+    });
+    $('.table tbody').html(html);
 };
 
 new App('data.json');

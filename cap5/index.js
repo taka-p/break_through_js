@@ -1,5 +1,14 @@
 'use strict';
 
+/**
+ * 1. URLと表示するコンテンツを紐付けるオブジェクトを作成 - pageFactory
+ * 2. popstateイベントが発火するとurlChangeHandlerが呼び出される
+ * 3. aタグがclickされた際、navigate関数でhistoryにhref属性値を追加
+ * 4. scanLastで[前回のurl, 次回のurl]という配列を作成
+ * 5. urlChangeHandlerで前回のurlに対応するコンテンツを非表示（存在する場合）
+ * 6. urlChangeHandlerで現在のurlに対応するコンテンツ表示
+ **/
+
 $(document).on("click", ".page a", function(e){
     e.preventDefault();
 
@@ -7,6 +16,7 @@ $(document).on("click", ".page a", function(e){
     myRouter.navigate(href);
 });
 
+// enter関数のラッパー関数（引数pathを渡せるようにラップ）
 function createEnterFunc(path) {
     return function enter($el, action, prev, next) {
         return $.ajax({

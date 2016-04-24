@@ -15,7 +15,7 @@
         }
     }
 
-    // pageObjectsに格納されるオブジェクトのうちpageidに対応するものを返す
+    // pageObjectsに格納されるオブジェクトのうちpageurlに対応するものを返す
     function getPage(pages, key) {
         return pages.filter(function (e) {
                 return e.url == key;
@@ -43,18 +43,22 @@
         return f.apply(this, temp);
     }
 
+    // 解決済みのデファードオブジェクト
     var firstPromise = new $.Deferred().resolve();
 
     function urlChangeHandler() {
-        var pageid = parseUrl(location.pathname);
+        var pageurl = parseUrl(location.pathname);
 
-        urlHistory.push(pageid);
+        urlHistory.push(pageurl);
 
+        // urlHistoryの最後から2つのURL要素を取り出し、prev,nextに分配する
+        // temp = [prev, next]
         scanLast(urlHistory, function (prev, next) {
+            // pageObjectsの中から該当URLのオブジェクトを抽出
             var prevPage = getPage(pageObjects, prev),
                 nextPage = getPage(pageObjects, next);
 
-            if (! nextPage) throw new Error(pageid + 'に対応するページが見つからない');
+            if (! nextPage) throw new Error(pageurl + 'に対応するページが見つからない');
 
             firstPromise.then(function () {
                 var page = prevPage;
@@ -107,7 +111,7 @@
     }
 
     function navigate(url) {
-        history.pushState(nullm, null, url);
+        history.pushState(null, null, url);
         urlChangeHandler();
     }
 

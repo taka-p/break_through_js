@@ -85,3 +85,7 @@ footer {
         -webkit-transform: perspective(1200) rotateY(90deg);
     }
 }
+
+.page {
+    will-change: transform;
+}

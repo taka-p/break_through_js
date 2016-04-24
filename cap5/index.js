@@ -1,59 +1,40 @@
 'use strict';
 
-;(function () {
+$(document).on("click", ".page a", function(e){
+    e.preventDefault();
 
-    var $pages;
+    var href = $(this).attr("href");
+    myRouter.navigate(href);
+});
 
-    function init() {
-        $pages = $('[data-role=page]').detach();
-        $(window)
-            .on("hashchange", urlChangeHandler)
-            .trigger("hashchange");
-    }
+function createEnterFunc(path) {
+    return function enter($el, action, prev, next) {
+        return $.ajax({
+            url: path,
+            dataType: 'html'
+        }).then(function (d) {
+            var content = $( d ).filter("article").find(".inner");
+            $el.html(content);
 
-    init();
-
-    function urlChangeHandler() {
-        var pageid = parseUrl(location.hash);
-        var $prevPage = $pages.filter(':visible');
-        var $nextPage = $pages.filter('.page' + pageid);
-
-        animEnd(
-            $prevPage.addClass('page-leave')
-        ).then(function () {
-
-            $pages
-                .detach()
-                .removeClass('page-leave');
-
-            return animEnd(
-                $nextPage
-                    .appendTo('article')
-                    .addClass('page-enter')
-            );
-        }).then(function () {
-           $nextPage.removeClass('page-enter');
+            return action();
         });
     }
+}
 
-    function parseUrl(url) {
-        return url.slice(1) || 1;
-    }
-
-    function animEnd($el) {
-        var dfd = new $.Deferred,
-            callback = function () { dfd.resolve($el); };
-
-        if ($el.length === 0) {
-            dfd.resolve();
-            return dfd;
-        }
-
-        $el.on("webkitAnimationEnd", callback);
-        dfd.done(function () {
-            $el.off("webkitAnimationEnd", callback);
+function leave($el, action) {
+    return $el.find('.inner')
+        .fadeOut()
+        .promise()
+        .then(function () {
+            return action();
         });
+}
 
-        return dfd;
-    }
-})();
+myRouter.add( "/index.html", $("<section class='page page1'/>"), createEnterFunc("./index.html"), leave);
+myRouter.add( "/page2.html", $("<section class='page page2'/>"), createEnterFunc("./page2.html"), leave);
+myRouter.add( "/page3.html", $("<section class='page page3'/>"), createEnterFunc("./page3.html"), leave);
+myRouter.add( "/page4.html", $("<section class='page page4'/>"), createEnterFunc("./page4.html"), leave);
+
+$(".page").detach();
+
+myRouter.start();

@@ -5,4 +5,4 @@ ajaxで取得したデータの・操作・表示をおこなう
 
 - Promise/Deferredを利用した非同期通信
 - underscore.jsを利用したデータ操作
-- underscore.jsのテンプレート機能でロジックを分割する
+- underscore.jsのテンプレート機能でビューロジックを切り出す

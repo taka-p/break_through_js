@@ -18,6 +18,7 @@ $(document).on("click", ".page a", function(e){
 
 // enter関数のラッパー関数（引数pathを渡せるようにラップ）
 function createEnterFunc(path) {
+    // pageEnterのラッパー（pageEnterの実行前に実行される）
     return function enter($el, action, prev, next) {
         return $.ajax({
             url: path,
@@ -31,6 +32,7 @@ function createEnterFunc(path) {
     }
 }
 
+// pageLeaveのラッパー（pageleaveの実行前に実行される）
 function leave($el, action) {
     return $el.find('.inner')
         .fadeOut()
